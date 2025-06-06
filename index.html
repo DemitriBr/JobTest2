@@ -54,7 +54,7 @@
                 <div class="xp-bar">
                   <div class="xp-fill" id="xp-fill" style="width: 0%"></div>
                 </div>
-                <span class="xp-text"><span id="current-xp">0</span>/<span id="max-xp">100</span> XP</span>
+                <span class="xp-text" id="xp-text">0/100 XP</span>
               </div>
             </div>
           </div>
@@ -63,16 +63,16 @@
       
       <!-- Navigation -->
       <nav class="main-nav">
-        <button class="nav-btn active" data-view="dashboard">DASHBOARD</button>
-        <button class="nav-btn" data-view="applications">APPLICATIONS</button>
-        <button class="nav-btn" data-view="kanban">KANBAN</button>
-        <button class="nav-btn" data-view="achievements">ACHIEVEMENTS</button>
+        <button class="nav-btn active" data-route="/dashboard">DASHBOARD</button>
+        <button class="nav-btn" data-route="/applications">APPLICATIONS</button>
+        <button class="nav-btn" data-route="/kanban">KANBAN</button>
+        <button class="nav-btn" data-route="/achievements">ACHIEVEMENTS</button>
       </nav>
       
       <!-- Main content area -->
-      <main class="main-content">
-        <div id="view-container" class="view-container">
-          <!-- Views will be loaded here dynamically -->
+      <main class="main-content" id="main-content">
+        <div class="view-container">
+          <!-- Views will be loaded here dynamically by the router -->
         </div>
       </main>
     </div>
