@@ -1,0 +1,43 @@
+{
+  "name": "retro-job-application-tracker",
+  "version": "1.0.0",
+  "description": "8-bit themed PWA for tracking job applications with gamification",
+  "type": "module",
+  "main": "src/main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .js",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:run": "vitest run",
+    "validate": "npm run lint && npm run test:run && npm run build",
+    "commit-check": "npm run validate"
+  },
+  "keywords": [
+    "job-tracker",
+    "pwa",
+    "8-bit",
+    "retro",
+    "gamification",
+    "offline"
+  ],
+  "author": "Retro Job Tracker Team",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "vite-plugin-pwa": "^0.17.0",
+    "sass": "^1.69.0",
+    "eslint": "^8.55.0",
+    "vitest": "^1.0.0",
+    "@vitest/ui": "^1.0.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "jsdom": "^23.0.0"
+  },
+  "dependencies": {
+    "crypto-js": "^4.2.0",
+    "dexie": "^3.2.4"
+  }
+}

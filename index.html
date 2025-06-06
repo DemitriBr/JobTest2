@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="8-bit themed PWA for tracking job applications with gamification" />
+  <meta name="theme-color" content="#2563eb" />
+  
+  <!-- Apple specific meta tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="RetroJobTracker" />
+  
+  <!-- Security headers -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; img-src 'self' data: blob:;" />
+  
+  <title>Retro Job Application Tracker</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  
+  <!-- PWA icons -->
+  <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png" />
+  
+  <!-- Preload critical fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="app">
+    <!-- Loading screen -->
+    <div id="loading-screen" class="loading-screen">
+      <div class="pixel-loader">
+        <div class="pixel-block"></div>
+        <div class="pixel-block"></div>
+        <div class="pixel-block"></div>
+        <div class="pixel-block"></div>
+      </div>
+      <p class="loading-text">LOADING...</p>
+    </div>
+    
+    <!-- Main app container -->
+    <div id="main-app" class="main-app hidden">
+      <!-- Header with player stats and level bar -->
+      <header class="app-header">
+        <div class="header-content">
+          <h1 class="app-title">RETRO JOB TRACKER</h1>
+          <div class="player-stats">
+            <div class="level-info">
+              <span class="level-text">LV.<span id="player-level">1</span></span>
+              <div class="xp-bar-container">
+                <div class="xp-bar">
+                  <div class="xp-fill" id="xp-fill" style="width: 0%"></div>
+                </div>
+                <span class="xp-text"><span id="current-xp">0</span>/<span id="max-xp">100</span> XP</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      
+      <!-- Navigation -->
+      <nav class="main-nav">
+        <button class="nav-btn active" data-view="dashboard">DASHBOARD</button>
+        <button class="nav-btn" data-view="applications">APPLICATIONS</button>
+        <button class="nav-btn" data-view="kanban">KANBAN</button>
+        <button class="nav-btn" data-view="achievements">ACHIEVEMENTS</button>
+      </nav>
+      
+      <!-- Main content area -->
+      <main class="main-content">
+        <div id="view-container" class="view-container">
+          <!-- Views will be loaded here dynamically -->
+        </div>
+      </main>
+    </div>
+    
+    <!-- XP Modal for level ups and achievements -->
+    <div id="xp-modal" class="modal hidden">
+      <div class="modal-content pixel-border">
+        <div class="modal-header">
+          <h2 id="modal-title">LEVEL UP!</h2>
+        </div>
+        <div class="modal-body">
+          <div class="celebration-content">
+            <div class="xp-animation">
+              <span class="xp-gain" id="xp-gain-text">+50 XP</span>
+            </div>
+            <p id="modal-message">Congratulations! You reached level 2!</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="pixel-btn primary" id="modal-close">CONTINUE</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- PIN Authentication Modal -->
+    <div id="pin-modal" class="modal">
+      <div class="modal-content pixel-border">
+        <div class="modal-header">
+          <h2>ENTER PIN</h2>
+        </div>
+        <div class="modal-body">
+          <div class="pin-input-container">
+            <input type="password" id="pin-input" class="pin-input" maxlength="6" placeholder="••••••" />
+            <div class="pin-dots">
+              <span class="pin-dot"></span>
+              <span class="pin-dot"></span>
+              <span class="pin-dot"></span>
+              <span class="pin-dot"></span>
+              <span class="pin-dot"></span>
+              <span class="pin-dot"></span>
+            </div>
+          </div>
+          <div class="pin-error hidden" id="pin-error">
+            Invalid PIN. Please try again.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="pixel-btn primary" id="pin-submit">UNLOCK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
