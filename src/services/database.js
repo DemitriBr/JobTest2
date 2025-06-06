@@ -603,7 +603,73 @@ class DatabaseService extends Dexie {
       return {};
     }
   }
+
+  // Gamification methods for new system
+  async getUserStats(userId) {
+    try {
+      const stats = await this.settings.where('key').equals(`gamification_stats_${userId}`).first();
+      return stats ? stats.value : null;
+    } catch (error) {
+      console.error('Error getting user stats:', error);
+      throw error;
+    }
+  }
+
+  async saveUserStats(stats) {
+    try {
+      const key = `gamification_stats_${stats.userId}`;
+      await this.setSetting(key, stats, false);
+      return stats;
+    } catch (error) {
+      console.error('Error saving user stats:', error);
+      throw error;
+    }
+  }
+
+  async getUserAchievements(userId) {
+    try {
+      const achievements = await this.settings.where('key').equals(`gamification_achievements_${userId}`).first();
+      return achievements ? achievements.value : [];
+    } catch (error) {
+      console.error('Error getting user achievements:', error);
+      throw error;
+    }
+  }
+
+  async saveUserAchievements(userId, achievements) {
+    try {
+      const key = `gamification_achievements_${userId}`;
+      await this.setSetting(key, achievements, false);
+      return achievements;
+    } catch (error) {
+      console.error('Error saving user achievements:', error);
+      throw error;
+    }
+  }
+
+  async getUserQuests(userId) {
+    try {
+      const quests = await this.settings.where('key').equals(`gamification_quests_${userId}`).first();
+      return quests ? quests.value : null;
+    } catch (error) {
+      console.error('Error getting user quests:', error);
+      throw error;
+    }
+  }
+
+  async saveUserQuests(userId, quests) {
+    try {
+      const key = `gamification_quests_${userId}`;
+      await this.setSetting(key, quests, false);
+      return quests;
+    } catch (error) {
+      console.error('Error saving user quests:', error);
+      throw error;
+    }
+  }
 }
 
 // Export singleton instance
-export default new DatabaseService();
+const db = new DatabaseService();
+export default db;
+export { db };

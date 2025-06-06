@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gamification System Test</title>
+  <link rel="stylesheet" href="/src/styles/main.scss">
+  <style>
+    body {
+      padding: 20px;
+      background-color: #0f0f23;
+      color: #f0f0f0;
+    }
+    
+    .test-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .test-section {
+      background-color: #1a1a2e;
+      border: 2px solid #4a4a6a;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 0;
+    }
+    
+    .test-section h2 {
+      color: #64b5f6;
+      margin-bottom: 15px;
+      font-family: monospace;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    
+    .stats-display {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-card {
+      background-color: #2a2a3e;
+      border: 1px solid #4a4a6a;
+      padding: 15px;
+    }
+    
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+    }
+    
+    .achievement-card {
+      background-color: #2a2a3e;
+      border: 2px solid #4a4a6a;
+      padding: 15px;
+      transition: all 0.3s ease;
+    }
+    
+    .achievement-card.unlocked {
+      border-color: #ffd700;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+    
+    .quests-list {
+      display: grid;
+      gap: 10px;
+    }
+    
+    .quest-item {
+      background-color: #2a2a3e;
+      border: 1px solid #4a4a6a;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .quest-progress {
+      width: 200px;
+      height: 8px;
+      background-color: #1a1a2e;
+      border: 1px solid #4a4a6a;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .quest-progress-fill {
+      height: 100%;
+      background-color: #64b5f6;
+      transition: width 0.3s ease;
+    }
+    
+    .log-output {
+      background-color: #000;
+      border: 1px solid #4a4a6a;
+      padding: 10px;
+      height: 200px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 12px;
+    }
+    
+    .log-entry {
+      margin-bottom: 5px;
+      color: #0f0;
+    }
+  </style>
+</head>
+<body>
+  <div id="celebration-container"></div>
+  
+  <div class="test-container">
+    <h1 style="text-align: center; font-family: monospace; color: #64b5f6; margin-bottom: 30px;">
+      🎮 Gamification System Test Suite 🎮
+    </h1>
+    
+    <!-- Player Stats Section -->
+    <div class="test-section">
+      <h2>Player Stats</h2>
+      <div class="stats-display" id="stats-display">
+        <div class="stat-card">
+          <h3>Level</h3>
+          <div id="player-level">1</div>
+        </div>
+        <div class="stat-card">
+          <h3>Title</h3>
+          <div id="player-title">Job Seeker Novice</div>
+        </div>
+        <div class="stat-card">
+          <h3>Total XP</h3>
+          <div id="total-xp">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Level Progress</h3>
+          <div id="level-progress">0 / 100</div>
+          <div class="quest-progress" style="margin-top: 5px;">
+            <div class="quest-progress-fill" id="level-progress-bar" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <h3>Current Streak</h3>
+          <div id="current-streak">0 days</div>
+        </div>
+        <div class="stat-card">
+          <h3>Achievements</h3>
+          <div id="achievement-count">0 / 0</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Action Buttons Section -->
+    <div class="test-section">
+      <h2>Test Actions</h2>
+      <div class="button-group">
+        <button class="pixel-btn primary" onclick="testCreateApplication()">Create Application</button>
+        <button class="pixel-btn primary" onclick="testUpdateStatus()">Update Status</button>
+        <button class="pixel-btn primary" onclick="testScheduleInterview()">Schedule Interview</button>
+        <button class="pixel-btn primary" onclick="testCompleteInterview()">Complete Interview</button>
+        <button class="pixel-btn primary" onclick="testAddNotes()">Add Notes</button>
+        <button class="pixel-btn primary" onclick="testDailyLogin()">Simulate Daily Login</button>
+        <button class="pixel-btn" onclick="testMultipleApplications()">Create 10 Applications</button>
+        <button class="pixel-btn" onclick="testLevelUp()">Test Level Up</button>
+      </div>
+    </div>
+    
+    <!-- Achievements Section -->
+    <div class="test-section">
+      <h2>Achievements</h2>
+      <div class="achievements-grid" id="achievements-grid">
+        <!-- Achievements will be populated here -->
+      </div>
+    </div>
+    
+    <!-- Quests Section -->
+    <div class="test-section">
+      <h2>Active Quests</h2>
+      <h3 style="font-size: 14px; margin-bottom: 10px;">Daily Quests</h3>
+      <div class="quests-list" id="daily-quests">
+        <!-- Daily quests will be populated here -->
+      </div>
+      
+      <h3 style="font-size: 14px; margin: 20px 0 10px;">Weekly Quests</h3>
+      <div class="quests-list" id="weekly-quests">
+        <!-- Weekly quests will be populated here -->
+      </div>
+    </div>
+    
+    <!-- Console Log Section -->
+    <div class="test-section">
+      <h2>Event Log</h2>
+      <div class="log-output" id="log-output"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { gamification, XP_ACTIONS, ACHIEVEMENTS } from '/src/services/gamification.js';
+    import { celebrations } from '/src/services/celebrations.js';
+    import { eventBus } from '/src/services/eventBus.js';
+    import db from '/src/services/database.js';
+    
+    // Initialize celebrations
+    celebrations.initialize();
+    
+    // Initialize gamification
+    const USER_ID = 'test-user';
+    let initialized = false;
+    
+    // Log function
+    function log(message, data = null) {
+      const logOutput = document.getElementById('log-output');
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      const timestamp = new Date().toLocaleTimeString();
+      entry.textContent = `[${timestamp}] ${message}`;
+      if (data) {
+        entry.textContent += ` - ${JSON.stringify(data)}`;
+      }
+      logOutput.appendChild(entry);
+      logOutput.scrollTop = logOutput.scrollHeight;
+    }
+    
+    // Event listeners
+    eventBus.on('gamification:initialized', (data) => {
+      log('Gamification initialized', { level: data.stats.level });
+      updateDisplay();
+    });
+    
+    eventBus.on('gamification:xp_gained', (data) => {
+      log(`XP Gained: +${data.amount}`, { action: data.action, total: data.totalXP });
+      updateDisplay();
+    });
+    
+    eventBus.on('gamification:achievements_unlocked', (data) => {
+      data.achievements.forEach(achievement => {
+        log(`Achievement Unlocked: ${achievement.name}`, { reward: achievement.xpReward });
+      });
+      updateDisplay();
+    });
+    
+    eventBus.on('gamification:quests_completed', (data) => {
+      data.quests.forEach(quest => {
+        log(`Quest Completed: ${quest.name}`, { reward: quest.xpReward });
+      });
+      updateDisplay();
+    });
+    
+    // Update display
+    function updateDisplay() {
+      if (!initialized) return;
+      
+      const progress = gamification.getProgress();
+      
+      // Update stats
+      document.getElementById('player-level').textContent = progress.stats.level;
+      document.getElementById('player-title').textContent = progress.stats.title;
+      document.getElementById('total-xp').textContent = progress.stats.totalXP;
+      document.getElementById('level-progress').textContent = 
+        `${progress.stats.currentXP} / ${progress.stats.nextLevelXP}`;
+      document.getElementById('level-progress-bar').style.width = 
+        `${progress.levelProgress.percentage}%`;
+      document.getElementById('current-streak').textContent = 
+        `${progress.stats.currentStreak} days`;
+      document.getElementById('achievement-count').textContent = 
+        `${progress.achievements.unlocked} / ${progress.achievements.total}`;
+      
+      // Update achievements
+      const achievementsGrid = document.getElementById('achievements-grid');
+      achievementsGrid.innerHTML = '';
+      
+      progress.achievements.list.forEach(achievement => {
+        const card = document.createElement('div');
+        card.className = `achievement-card ${achievement.unlocked ? 'unlocked' : ''}`;
+        card.innerHTML = `
+          <div style="font-size: 24px; margin-bottom: 5px;">${achievement.icon}</div>
+          <h3 style="font-size: 14px; margin-bottom: 5px;">${achievement.name}</h3>
+          <p style="font-size: 12px; color: #999; margin-bottom: 5px;">${achievement.description}</p>
+          <div style="font-size: 12px; color: #64b5f6;">+${achievement.xpReward} XP</div>
+          ${achievement.unlocked ? 
+            `<div style="font-size: 10px; color: #4caf50; margin-top: 5px;">✓ Unlocked</div>` : 
+            ''}
+        `;
+        achievementsGrid.appendChild(card);
+      });
+      
+      // Update quests
+      updateQuests(progress.quests.daily, 'daily-quests');
+      updateQuests(progress.quests.weekly, 'weekly-quests');
+    }
+    
+    function updateQuests(quests, containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      
+      quests.forEach(quest => {
+        const questItem = document.createElement('div');
+        questItem.className = 'quest-item';
+        questItem.innerHTML = `
+          <div>
+            <h4 style="font-size: 14px; margin-bottom: 5px;">${quest.name}</h4>
+            <p style="font-size: 12px; color: #999;">${quest.description}</p>
+            <div style="font-size: 12px; color: #64b5f6; margin-top: 5px;">
+              Progress: ${quest.progress} / ${quest.target} | Reward: +${quest.xpReward} XP
+            </div>
+          </div>
+          <div>
+            <div class="quest-progress">
+              <div class="quest-progress-fill" style="width: ${(quest.progress / quest.target) * 100}%"></div>
+            </div>
+            ${quest.completed && !quest.claimedReward ? 
+              `<button class="pixel-btn primary" style="margin-top: 5px;" 
+                onclick="claimQuestReward('${quest.id}')">Claim</button>` : 
+              ''}
+            ${quest.claimedReward ? 
+              '<div style="color: #4caf50; font-size: 12px; margin-top: 5px;">✓ Claimed</div>' : 
+              ''}
+          </div>
+        `;
+        container.appendChild(questItem);
+      });
+    }
+    
+    // Test functions
+    window.testCreateApplication = async function() {
+      await gamification.awardXP('APPLICATION_CREATED');
+      await gamification.updateApplicationStats('created');
+      log('Created application');
+    };
+    
+    window.testUpdateStatus = async function() {
+      await gamification.awardXP('APPLICATION_STATUS_CHANGED');
+      await gamification.updateApplicationStats('status_changed');
+      log('Updated application status');
+    };
+    
+    window.testScheduleInterview = async function() {
+      await gamification.awardXP('INTERVIEW_SCHEDULED');
+      await gamification.updateApplicationStats('interview_scheduled');
+      log('Scheduled interview');
+    };
+    
+    window.testCompleteInterview = async function() {
+      await gamification.awardXP('INTERVIEW_COMPLETED');
+      await gamification.updateApplicationStats('interview_completed');
+      log('Completed interview');
+    };
+    
+    window.testAddNotes = async function() {
+      await gamification.awardXP('INTERVIEW_NOTES_ADDED');
+      await gamification.updateApplicationStats('notes_added');
+      log('Added notes');
+    };
+    
+    window.testDailyLogin = async function() {
+      // Simulate changing the date
+      const stats = gamification.stats;
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      stats.lastLoginDate = yesterday.toISOString().split('T')[0];
+      await db.saveUserStats(stats);
+      
+      // Re-check daily login
+      await gamification.checkDailyLogin();
+      log('Simulated daily login');
+    };
+    
+    window.testMultipleApplications = async function() {
+      for (let i = 0; i < 10; i++) {
+        await gamification.awardXP('APPLICATION_CREATED');
+        await gamification.updateApplicationStats('created');
+      }
+      log('Created 10 applications');
+    };
+    
+    window.testLevelUp = async function() {
+      // Award enough XP to level up
+      await gamification.awardXP('FIFTY_APPLICATIONS');
+      log('Awarded bonus XP');
+    };
+    
+    window.claimQuestReward = async function(questId) {
+      try {
+        const result = await gamification.claimQuestReward(questId);
+        log(`Claimed quest reward`, result);
+        updateDisplay();
+      } catch (error) {
+        log(`Error claiming quest: ${error.message}`);
+      }
+    };
+    
+    // Initialize on load
+    async function init() {
+      try {
+        log('Initializing gamification system...');
+        await gamification.initialize(USER_ID);
+        initialized = true;
+        log('Gamification system ready!');
+        updateDisplay();
+      } catch (error) {
+        log(`Error initializing: ${error.message}`);
+        console.error(error);
+      }
+    }
+    
+    // Start initialization
+    init();
+  </script>
+</body>
+</html>
