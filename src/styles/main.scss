@@ -285,7 +285,8 @@ body {
     border-color: $color-primary;
     
     &:hover {
-      background-color: lighten($color-primary, 10%);
+      background-color: $color-primary;
+      filter: brightness(1.1);
     }
   }
 }

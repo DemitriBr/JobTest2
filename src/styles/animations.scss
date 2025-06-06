@@ -58,7 +58,7 @@
   background: linear-gradient(
     135deg,
     $color-primary 0%,
-    lighten($color-primary, 10%) 50%,
+    $color-primary 50%,
     $color-primary 100%
   );
   
@@ -88,7 +88,8 @@
   @include button-press-effect();
   
   &:hover {
-    background-color: lighten($color-secondary, 15%);
+    background-color: $color-secondary;
+    filter: brightness(1.15);
     box-shadow: 
       3px 3px 0 $color-pixel-border-dark,
       0 0 10px rgba($color-secondary, 0.5);
@@ -432,7 +433,10 @@
 
 @keyframes dangerFlash {
   0% { background-color: $color-danger; }
-  100% { background-color: lighten($color-danger, 20%); }
+  100% { 
+    background-color: $color-danger;
+    filter: brightness(1.2);
+  }
 }
 
 @keyframes modalScaleIn {

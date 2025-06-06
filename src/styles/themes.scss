@@ -313,10 +313,38 @@ body {
 
 // Theme toggle button styles
 .theme-toggle {
-  @include pixel-button(var(--color-primary));
+  // Apply pixel button styles manually to work with CSS variables
+  @include pixel-border(var(--color-primary), 2px, 'raised');
+  background-color: var(--color-primary);
+  color: var(--color-text-primary);
+  font-family: $font-family-primary;
+  font-size: $font-size-xs;
+  padding: $space-sm $space-md;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 0;
+  transition: all $duration-fast $easing-ease-out;
   position: relative;
   overflow: hidden;
   min-width: 120px;
+  user-select: none;
+  
+  &:hover {
+    filter: brightness(1.1);
+    transform: translate(-1px, -1px);
+    box-shadow: 
+      3px 3px 0 $color-pixel-border-dark,
+      inset 2px 2px 0 rgba(255, 255, 255, 0.3);
+  }
+  
+  &:active {
+    filter: brightness(0.95);
+    transform: translate(1px, 1px);
+    box-shadow: 
+      1px 1px 0 $color-pixel-border-dark,
+      inset 2px 2px 0 rgba(0, 0, 0, 0.2);
+  }
   
   .theme-icon {
     transition: transform 0.3s ease-in-out;

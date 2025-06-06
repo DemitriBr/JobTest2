@@ -65,7 +65,8 @@
   -ms-user-select: none;
   
   &:hover {
-    background-color: lighten($bg-color, 10%);
+    background-color: $bg-color;
+    filter: brightness(1.1);
     transform: translate(-1px, -1px);
     box-shadow: 
       3px 3px 0 $color-pixel-border-dark,
@@ -73,7 +74,8 @@
   }
   
   &:active {
-    background-color: darken($bg-color, 5%);
+    background-color: $bg-color;
+    filter: brightness(0.95);
     transform: translate(1px, 1px);
     box-shadow: 
       1px 1px 0 $color-pixel-border-dark,
@@ -195,7 +197,7 @@
   
   .modal-header {
     @include pixel-panel($color-bg-light);
-    margin: -$space-md -$space-md $space-md -$space-md;
+    margin: calc(-1 * #{$space-md}) calc(-1 * #{$space-md}) $space-md calc(-1 * #{$space-md});
     padding: $space-md;
     text-align: center;
     
@@ -207,7 +209,7 @@
   }
   
   .modal-footer {
-    margin: $space-md -$space-md -$space-md -$space-md;
+    margin: $space-md calc(-1 * #{$space-md}) calc(-1 * #{$space-md}) calc(-1 * #{$space-md});
     padding: $space-md;
     text-align: center;
     border-top: 1px solid $color-pixel-border-dark;
