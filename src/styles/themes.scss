@@ -258,24 +258,22 @@
 
 // Theme transition effects
 @mixin theme-transition {
-  * {
-    transition: 
-      background-color 0.3s ease-in-out,
-      color 0.3s ease-in-out,
-      border-color 0.3s ease-in-out,
-      box-shadow 0.3s ease-in-out;
-  }
+  transition: 
+    background-color 0.3s ease-in-out,
+    color 0.3s ease-in-out,
+    border-color 0.3s ease-in-out,
+    box-shadow 0.3s ease-in-out;
+}
+
+// Apply theme transitions to all elements
+* {
+  @include theme-transition();
 }
 
 // Apply theming to base elements
 body {
-  @include theme-transition();
   background-color: var(--color-bg-dark);
   color: var(--color-text-primary);
-  
-  &.theme-transitioning {
-    @include theme-transition();
-  }
 }
 
 // Theme-aware component classes
