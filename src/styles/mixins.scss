@@ -1,0 +1,441 @@
+// 8-Bit Component Mixins Library
+// Authentic NES-inspired design components
+
+// Pixel Border Effects
+@mixin pixel-border($color: $color-pixel-border-light, $thickness: 2px, $style: 'raised') {
+  border: #{$thickness} solid #{$color};
+  
+  @if $style == 'raised' {
+    box-shadow: 
+      #{$thickness} #{$thickness} 0 $color-pixel-border-dark,
+      inset #{$thickness} #{$thickness} 0 rgba(255, 255, 255, 0.3);
+  } @else if $style == 'sunken' {
+    box-shadow: 
+      inset #{$thickness} #{$thickness} 0 $color-pixel-border-dark,
+      inset -#{$thickness} -#{$thickness} 0 rgba(255, 255, 255, 0.3);
+  } @else if $style == 'flat' {
+    box-shadow: #{$thickness} #{$thickness} 0 $color-pixel-border-dark;
+  }
+}
+
+@mixin pixel-border-glow($color: $color-primary, $intensity: 0.5) {
+  @include pixel-border($color);
+  box-shadow: 
+    2px 2px 0 $color-pixel-border-dark,
+    0 0 10px rgba($color, $intensity),
+    0 0 20px rgba($color, $intensity * 0.5);
+}
+
+@mixin pixel-border-animated($color: $color-primary) {
+  @include pixel-border($color);
+  transition: all $duration-fast $easing-ease-out;
+  
+  &:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 $color-pixel-border-dark;
+  }
+  
+  &:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 $color-pixel-border-dark;
+  }
+}
+
+// 8-Bit Button Mixins
+@mixin pixel-button($bg-color: $color-primary, $text-color: $color-text-primary) {
+  @include pixel-border($bg-color, 2px, 'raised');
+  
+  background-color: $bg-color;
+  color: $text-color;
+  font-family: $font-family-primary;
+  font-size: $font-size-xs;
+  padding: $space-sm $space-md;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 0;
+  transition: all $duration-fast $easing-ease-out;
+  position: relative;
+  overflow: hidden;
+  
+  // Disable text selection
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  
+  &:hover {
+    background-color: lighten($bg-color, 10%);
+    transform: translate(-1px, -1px);
+    box-shadow: 
+      3px 3px 0 $color-pixel-border-dark,
+      inset 2px 2px 0 rgba(255, 255, 255, 0.3);
+  }
+  
+  &:active {
+    background-color: darken($bg-color, 5%);
+    transform: translate(1px, 1px);
+    box-shadow: 
+      1px 1px 0 $color-pixel-border-dark,
+      inset 2px 2px 0 rgba(0, 0, 0, 0.2);
+  }
+  
+  &:disabled {
+    background-color: $color-bg-light;
+    color: $color-text-muted;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 2px 2px 0 $color-pixel-border-dark;
+    
+    &:hover, &:active {
+      transform: none;
+      background-color: $color-bg-light;
+    }
+  }
+}
+
+@mixin pixel-button-large {
+  padding: $space-md $space-lg;
+  font-size: $font-size-sm;
+  min-width: 120px;
+  height: $btn-height-lg;
+}
+
+@mixin pixel-button-small {
+  padding: $space-xs $space-sm;
+  font-size: 8px;
+  min-width: 60px;
+  height: $btn-height-sm;
+}
+
+// 8-Bit Card/Container Mixins
+@mixin pixel-card($bg-color: $color-bg-medium, $border-color: $color-pixel-border-light) {
+  @include pixel-border($border-color, 2px, 'raised');
+  
+  background-color: $bg-color;
+  padding: $space-md;
+  border-radius: 0;
+  position: relative;
+  
+  // Optional inner border effect
+  &::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+  }
+}
+
+@mixin pixel-panel($bg-color: $color-bg-light) {
+  @include pixel-card($bg-color);
+  box-shadow: 
+    inset 2px 2px 0 rgba(255, 255, 255, 0.2),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.3),
+    2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+// Input Field Mixins
+@mixin pixel-input($bg-color: $color-bg-dark, $border-color: $color-pixel-border-light) {
+  @include pixel-border($border-color, 2px, 'sunken');
+  
+  background-color: $bg-color;
+  color: $color-text-primary;
+  font-family: $font-family-primary;
+  font-size: $font-size-sm;
+  padding: $space-sm;
+  border-radius: 0;
+  transition: all $duration-fast $easing-ease-out;
+  
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+    box-shadow: 
+      inset 2px 2px 0 $color-pixel-border-dark,
+      0 0 0 2px rgba($color-primary, 0.3);
+  }
+  
+  &:invalid {
+    border-color: $color-danger;
+    box-shadow: 
+      inset 2px 2px 0 $color-pixel-border-dark,
+      0 0 0 2px rgba($color-danger, 0.3);
+  }
+  
+  &::placeholder {
+    color: $color-text-muted;
+    opacity: 0.7;
+  }
+}
+
+// Modal/Dialog Mixins
+@mixin pixel-modal($bg-color: $color-bg-medium, $overlay-color: rgba(0, 0, 0, 0.8)) {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: $overlay-color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: $z-modal;
+  
+  .modal-content {
+    @include pixel-card($bg-color);
+    min-width: $modal-width-sm;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    animation: modalSlideIn $duration-normal $easing-ease-out;
+  }
+  
+  .modal-header {
+    @include pixel-panel($color-bg-light);
+    margin: -$space-md -$space-md $space-md -$space-md;
+    padding: $space-md;
+    text-align: center;
+    
+    h1, h2, h3 {
+      font-size: $font-size-md;
+      color: $color-text-primary;
+      margin: 0;
+    }
+  }
+  
+  .modal-footer {
+    margin: $space-md -$space-md -$space-md -$space-md;
+    padding: $space-md;
+    text-align: center;
+    border-top: 1px solid $color-pixel-border-dark;
+  }
+}
+
+// Progress Bar Mixins
+@mixin pixel-progress-bar($height: 8px, $bg-color: $color-bg-dark, $fill-color: $color-primary) {
+  @include pixel-border($color-pixel-border-light, 1px, 'sunken');
+  
+  width: 100%;
+  height: $height;
+  background-color: $bg-color;
+  position: relative;
+  overflow: hidden;
+  
+  .progress-fill {
+    height: 100%;
+    background-color: $fill-color;
+    transition: width $duration-normal $easing-ease-out;
+    position: relative;
+    
+    // Animated shine effect
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+      );
+      animation: progressShine 2s infinite;
+    }
+  }
+}
+
+// Notification/Toast Mixins
+@mixin pixel-notification($type: 'info') {
+  @include pixel-border();
+  
+  padding: $space-sm $space-md;
+  margin: $space-xs 0;
+  font-family: $font-family-primary;
+  font-size: $font-size-xs;
+  position: relative;
+  animation: notificationSlideIn $duration-normal $easing-ease-out;
+  
+  @if $type == 'success' {
+    background-color: rgba($color-success, 0.2);
+    border-color: $color-success;
+    color: $color-success;
+  } @else if $type == 'warning' {
+    background-color: rgba($color-warning, 0.2);
+    border-color: $color-warning;
+    color: $color-warning;
+  } @else if $type == 'error' {
+    background-color: rgba($color-danger, 0.2);
+    border-color: $color-danger;
+    color: $color-danger;
+  } @else {
+    background-color: rgba($color-info, 0.2);
+    border-color: $color-info;
+    color: $color-info;
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 4px;
+    height: calc(100% - 4px);
+    background-color: currentColor;
+  }
+}
+
+// Loading Spinner Mixins
+@mixin pixel-loader($size: 16px, $color: $color-primary) {
+  width: $size;
+  height: $size;
+  position: relative;
+  
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 2px solid transparent;
+    border-top-color: $color;
+    border-radius: 0;
+    animation: pixelSpin 1s linear infinite;
+  }
+  
+  &::after {
+    border-top-color: transparent;
+    border-right-color: $color;
+    animation-delay: 0.25s;
+  }
+}
+
+// Table Mixins
+@mixin pixel-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: $font-family-primary;
+  font-size: $font-size-xs;
+  
+  th, td {
+    @include pixel-border($color-pixel-border-light, 1px, 'flat');
+    padding: $space-sm;
+    text-align: left;
+    background-color: $color-bg-medium;
+  }
+  
+  th {
+    background-color: $color-bg-light;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  tr:nth-child(even) td {
+    background-color: $color-bg-light;
+  }
+  
+  tr:hover td {
+    background-color: rgba($color-primary, 0.1);
+  }
+}
+
+// Utility Mixins
+@mixin pixel-shadow($distance: 2px, $color: $color-pixel-border-dark) {
+  box-shadow: #{$distance} #{$distance} 0 #{$color};
+}
+
+@mixin pixel-inset-shadow($distance: 2px, $color: rgba(0, 0, 0, 0.3)) {
+  box-shadow: inset #{$distance} #{$distance} 0 #{$color};
+}
+
+@mixin pixel-text-outline($color: $color-pixel-border-dark, $width: 1px) {
+  text-shadow:
+    -#{$width} -#{$width} 0 #{$color},
+    #{$width} -#{$width} 0 #{$color},
+    -#{$width} #{$width} 0 #{$color},
+    #{$width} #{$width} 0 #{$color};
+}
+
+// Responsive Mixins
+@mixin mobile-only {
+  @media (max-width: #{$breakpoint-sm - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet-up {
+  @media (min-width: #{$breakpoint-md}) {
+    @content;
+  }
+}
+
+@mixin desktop-up {
+  @media (min-width: #{$breakpoint-lg}) {
+    @content;
+  }
+}
+
+// Animation Keyframes
+@keyframes modalSlideIn {
+  0% {
+    transform: translate(-50%, -60%);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes notificationSlideIn {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes progressShine {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes pixelSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pixelPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes pixelBlink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}

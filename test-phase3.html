@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 3: 8-Bit Design System Test</title>
+  <style>
+    /* Include compiled CSS from our SCSS files inline for testing */
+    :root {
+      /* NES-inspired color palette */
+      --color-primary: #2563eb;
+      --color-secondary: #7c3aed;
+      --color-accent: #f59e0b;
+      --color-success: #10b981;
+      --color-danger: #ef4444;
+      --color-bg-dark: #0f0f23;
+      --color-bg-medium: #1e1e3f;
+      --color-bg-light: #2d2d5a;
+      --color-text-primary: #ffffff;
+      --color-text-secondary: #a1a1aa;
+      --color-border-light: #ffffff;
+      --color-border-dark: #000000;
+      --color-xp-bar: #10b981;
+      --color-level-gold: #fbbf24;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Press Start 2P', 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--color-text-primary);
+      background-color: var(--color-bg-dark);
+      padding: 20px;
+      image-rendering: pixelated;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section {
+      margin: 40px 0;
+      padding: 20px;
+      background: var(--color-bg-medium);
+      border: 2px solid var(--color-border-light);
+      box-shadow: 2px 2px 0 var(--color-border-dark);
+    }
+
+    h1, h2 {
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 16px;
+      color: var(--color-primary);
+      text-shadow: 2px 2px 0 var(--color-border-dark);
+    }
+
+    h2 {
+      font-size: 14px;
+      color: var(--color-accent);
+    }
+
+    /* Pixel Button Styles */
+    .pixel-btn {
+      background-color: var(--color-primary);
+      color: var(--color-text-primary);
+      border: 2px solid var(--color-primary);
+      padding: 8px 16px;
+      font-family: inherit;
+      font-size: 10px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s ease-out;
+      box-shadow: 2px 2px 0 var(--color-border-dark);
+      margin: 5px;
+    }
+
+    .pixel-btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 var(--color-border-dark);
+      background-color: #4b7ff7;
+    }
+
+    .pixel-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--color-border-dark);
+    }
+
+    .pixel-btn.secondary {
+      background-color: var(--color-secondary);
+      border-color: var(--color-secondary);
+    }
+
+    .pixel-btn.success {
+      background-color: var(--color-success);
+      border-color: var(--color-success);
+    }
+
+    .pixel-btn.danger {
+      background-color: var(--color-danger);
+      border-color: var(--color-danger);
+    }
+
+    /* XP Bar */
+    .xp-bar-demo {
+      margin: 20px 0;
+    }
+
+    .xp-bar {
+      width: 300px;
+      height: 16px;
+      background: #374151;
+      border: 2px solid var(--color-border-light);
+      position: relative;
+      box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .xp-fill {
+      height: 100%;
+      background: var(--color-xp-bar);
+      width: 65%;
+      transition: width 0.3s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .xp-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      animation: progressShine 2s infinite;
+    }
+
+    @keyframes progressShine {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    /* CRT Effect */
+    .crt-screen {
+      position: relative;
+      background: var(--color-bg-dark);
+      padding: 20px;
+      border-radius: 2%;
+      box-shadow: 
+        inset 0 0 50px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(37, 99, 235, 0.2);
+    }
+
+    .crt-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.1) 2px,
+        rgba(0, 0, 0, 0.1) 4px
+      );
+      pointer-events: none;
+    }
+
+    /* Glowing Text */
+    .glow-text {
+      color: var(--color-primary);
+      text-shadow: 
+        0 0 5px rgba(37, 99, 235, 0.8),
+        0 0 10px rgba(37, 99, 235, 0.6),
+        0 0 15px rgba(37, 99, 235, 0.4);
+      animation: textGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes textGlow {
+      0% { filter: brightness(1); }
+      100% { filter: brightness(1.2); }
+    }
+
+    /* Pixel Card */
+    .pixel-card {
+      background: var(--color-bg-medium);
+      border: 2px solid var(--color-border-light);
+      padding: 16px;
+      margin: 10px 0;
+      box-shadow: 2px 2px 0 var(--color-border-dark);
+      transition: all 0.2s ease-out;
+    }
+
+    .pixel-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 
+        2px 2px 0 var(--color-border-dark),
+        4px 6px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Loading Animation */
+    .loading-dots {
+      display: inline-flex;
+      gap: 4px;
+      margin: 20px 0;
+    }
+
+    .loading-dots span {
+      width: 8px;
+      height: 8px;
+      background: var(--color-primary);
+      animation: dotBounce 1.4s infinite both;
+    }
+
+    .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+    .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes dotBounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    /* Achievement Popup */
+    .achievement-demo {
+      position: relative;
+      display: inline-block;
+      margin: 20px 0;
+    }
+
+    .achievement-popup {
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--color-bg-medium);
+      color: var(--color-level-gold);
+      padding: 8px 16px;
+      border: 2px solid var(--color-level-gold);
+      font-size: 10px;
+      white-space: nowrap;
+      animation: achievementSlide 3s ease-out;
+      opacity: 0;
+    }
+
+    @keyframes achievementSlide {
+      0% {
+        transform: translateX(-50%) translateY(-20px);
+        opacity: 0;
+      }
+      20%, 80% {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(-50%) translateY(-20px);
+        opacity: 0;
+      }
+    }
+
+    /* XP Gain Animation */
+    .xp-popup {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--color-xp-bar);
+      font-size: 14px;
+      font-weight: bold;
+      animation: xpFloat 2s ease-out;
+      opacity: 0;
+    }
+
+    @keyframes xpFloat {
+      0% {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(-50%) translateY(-30px);
+        opacity: 0;
+      }
+    }
+
+    /* Input styling */
+    .pixel-input {
+      background: var(--color-bg-dark);
+      border: 2px solid var(--color-border-light);
+      color: var(--color-text-primary);
+      padding: 8px;
+      font-family: inherit;
+      font-size: 10px;
+      box-shadow: inset 2px 2px 0 var(--color-border-dark);
+      transition: all 0.15s ease-out;
+    }
+
+    .pixel-input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 
+        inset 2px 2px 0 var(--color-border-dark),
+        0 0 0 2px rgba(37, 99, 235, 0.3);
+    }
+
+    /* Demo grid */
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .animate-on-load {
+      opacity: 0;
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    .code-block {
+      background: var(--color-bg-dark);
+      border: 1px solid var(--color-border-light);
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 10px;
+      overflow-x: auto;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h1 class="glow-text animate-on-load">🎮 Phase 3: 8-Bit Design System</h1>
+    
+    <section class="section crt-screen">
+      <h2>✨ Visual Effects Library</h2>
+      <div class="demo-grid">
+        <div class="pixel-card">
+          <h3>CRT Scanlines</h3>
+          <p>Authentic retro monitor effect with subtle scanlines</p>
+        </div>
+        <div class="pixel-card">
+          <h3 class="glow-text">Glowing Text</h3>
+          <p>Phosphor-style text glow animation</p>
+        </div>
+        <div class="pixel-card">
+          <h3>Pixel Perfect</h3>
+          <p>Crisp edges and pixelated rendering</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>🎯 Button Animations</h2>
+      <div>
+        <button class="pixel-btn" onclick="showXP(this)">Primary Button</button>
+        <button class="pixel-btn secondary">Secondary</button>
+        <button class="pixel-btn success">Success</button>
+        <button class="pixel-btn danger">Danger</button>
+      </div>
+      <div class="code-block">
+        <code>// Button hover: -1px translate + shadow<br>
+        // Button active: +1px translate + reduced shadow<br>
+        // Smooth transitions with pixel-perfect alignment</code>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>📊 XP & Progress System</h2>
+      <div class="xp-bar-demo">
+        <p>Player Level: 12 | XP: 650/1000</p>
+        <div class="xp-bar">
+          <div class="xp-fill" id="xp-bar"></div>
+        </div>
+        <button class="pixel-btn success" onclick="animateXP()">Award XP</button>
+      </div>
+      <div class="achievement-demo">
+        <button class="pixel-btn" onclick="showAchievement(this)">Unlock Achievement</button>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>🎨 Theme System</h2>
+      <div class="demo-grid">
+        <div class="pixel-card">
+          <h3>Dark Theme (Default)</h3>
+          <p>Deep navy backgrounds with vibrant accents</p>
+        </div>
+        <div class="pixel-card">
+          <h3>Light Theme</h3>
+          <p>High readability with softer colors</p>
+        </div>
+        <div class="pixel-card">
+          <h3>High Contrast</h3>
+          <p>Accessibility-focused with maximum contrast</p>
+        </div>
+        <div class="pixel-card">
+          <h3>Retro Green Terminal</h3>
+          <p>Classic green phosphor CRT style</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>🔧 Components</h2>
+      <div class="demo-grid">
+        <div>
+          <h3>Input Fields</h3>
+          <input type="text" class="pixel-input" placeholder="Enter text...">
+        </div>
+        <div>
+          <h3>Loading Animation</h3>
+          <div class="loading-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>📋 Implementation Summary</h2>
+      <div class="code-block">
+        <strong>SCSS Architecture:</strong><br>
+        ✅ variables.scss - NES color palette & spacing<br>
+        ✅ mixins.scss - Reusable component patterns<br>
+        ✅ effects.scss - CRT, glow, and visual effects<br>
+        ✅ animations.scss - Button states & interactions<br>
+        ✅ themes.scss - Multi-theme support with CSS variables<br><br>
+        
+        <strong>Key Features:</strong><br>
+        • Pixel-perfect 2px/4px borders with shadows<br>
+        • Authentic button press animations<br>
+        • CRT scanline overlays (adjustable opacity)<br>
+        • Phosphor glow effects for text<br>
+        • XP bars with animated shine effect<br>
+        • Achievement popups with slide animations<br>
+        • Theme switching with smooth transitions<br>
+        • Accessibility support (reduced motion, high contrast)<br>
+        • Responsive grid layouts<br>
+        • Loading states and micro-interactions
+      </div>
+    </section>
+  </div>
+
+  <div class="theme-toggle">
+    <button class="pixel-btn" onclick="alert('Theme switching requires full app integration')">🌙 Dark</button>
+    <button class="pixel-btn" onclick="alert('Theme switching requires full app integration')">☀️ Light</button>
+  </div>
+
+  <script>
+    function showXP(button) {
+      const popup = document.createElement('div');
+      popup.className = 'xp-popup';
+      popup.textContent = '+25 XP';
+      button.style.position = 'relative';
+      button.appendChild(popup);
+      
+      setTimeout(() => popup.remove(), 2000);
+    }
+
+    function showAchievement(button) {
+      const popup = document.createElement('div');
+      popup.className = 'achievement-popup';
+      popup.textContent = '🏆 ACHIEVEMENT UNLOCKED!';
+      button.parentElement.appendChild(popup);
+      
+      setTimeout(() => popup.remove(), 3000);
+    }
+
+    function animateXP() {
+      const bar = document.getElementById('xp-bar');
+      const currentWidth = parseInt(bar.style.width || '65');
+      const newWidth = Math.min(currentWidth + 10, 100);
+      bar.style.width = newWidth + '%';
+      
+      if (newWidth === 100) {
+        setTimeout(() => {
+          bar.style.width = '0%';
+          alert('LEVEL UP! 🎉');
+        }, 500);
+      }
+    }
+
+    // Add entrance animations
+    document.querySelectorAll('.section').forEach((section, index) => {
+      section.style.opacity = '0';
+      section.style.animation = `fadeIn 0.5s ease-out ${index * 0.1}s forwards`;
+    });
+  </script>
+</body>
+</html>

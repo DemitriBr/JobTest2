@@ -1,0 +1,665 @@
+// 8-Bit Button Animations and Interactive Effects
+// Advanced hover states and micro-interactions
+
+// Button Press Animations
+@mixin button-press-effect($depth: 2px) {
+  position: relative;
+  transition: all $duration-fast $easing-ease-out;
+  
+  &:hover {
+    transform: translate(-#{$depth/2}, -#{$depth/2});
+    box-shadow: 
+      #{$depth + 1} #{$depth + 1} 0 $color-pixel-border-dark,
+      inset 1px 1px 0 rgba(255, 255, 255, 0.3);
+  }
+  
+  &:active {
+    transform: translate(#{$depth/2}, #{$depth/2});
+    box-shadow: 
+      #{$depth/2} #{$depth/2} 0 $color-pixel-border-dark,
+      inset 2px 2px 0 rgba(0, 0, 0, 0.2);
+    transition-duration: $duration-fast / 2;
+  }
+}
+
+@mixin button-bounce-effect {
+  &:hover {
+    animation: buttonBounce 0.6s ease-in-out;
+  }
+}
+
+@mixin button-shake-effect {
+  &:hover {
+    animation: buttonShake 0.5s ease-in-out;
+  }
+}
+
+@mixin button-grow-effect($scale: 1.05) {
+  transition: transform $duration-normal $easing-ease-out;
+  
+  &:hover {
+    transform: scale($scale);
+  }
+  
+  &:active {
+    transform: scale(#{$scale * 0.95});
+  }
+}
+
+// Advanced Button Styles
+@mixin retro-button-primary {
+  @include pixel-button($color-primary);
+  @include button-press-effect();
+  
+  position: relative;
+  overflow: hidden;
+  
+  // Animated background gradient
+  background: linear-gradient(
+    135deg,
+    $color-primary 0%,
+    lighten($color-primary, 10%) 50%,
+    $color-primary 100%
+  );
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    transition: left $duration-normal $easing-ease-out;
+  }
+  
+  &:hover::before {
+    left: 100%;
+  }
+}
+
+@mixin retro-button-secondary {
+  @include pixel-button($color-secondary);
+  @include button-press-effect();
+  
+  &:hover {
+    background-color: lighten($color-secondary, 15%);
+    box-shadow: 
+      3px 3px 0 $color-pixel-border-dark,
+      0 0 10px rgba($color-secondary, 0.5);
+  }
+}
+
+@mixin retro-button-success {
+  @include pixel-button($color-success);
+  @include button-press-effect();
+  
+  &:hover {
+    animation: successPulse 1s ease-in-out infinite;
+  }
+}
+
+@mixin retro-button-danger {
+  @include pixel-button($color-danger);
+  @include button-press-effect();
+  
+  &:hover {
+    animation: dangerFlash 0.3s ease-in-out infinite alternate;
+  }
+}
+
+@mixin retro-button-ghost {
+  background: transparent;
+  border: 2px solid $color-primary;
+  color: $color-primary;
+  font-family: $font-family-primary;
+  font-size: $font-size-xs;
+  padding: $space-sm $space-md;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all $duration-normal $easing-ease-out;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: $color-primary;
+    transition: width $duration-normal $easing-ease-out;
+    z-index: -1;
+  }
+  
+  &:hover {
+    color: $color-text-primary;
+    border-color: $color-primary;
+    
+    &::before {
+      width: 100%;
+    }
+  }
+}
+
+// Menu and Navigation Animations
+@mixin nav-item-slide {
+  position: relative;
+  overflow: hidden;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background-color: $color-primary;
+    transition: left $duration-normal $easing-ease-out;
+  }
+  
+  &:hover::after,
+  &.active::after {
+    left: 0;
+  }
+}
+
+@mixin nav-item-glow {
+  transition: all $duration-normal $easing-ease-out;
+  
+  &:hover,
+  &.active {
+    color: $color-primary;
+    text-shadow: 
+      0 0 5px $color-primary,
+      0 0 10px $color-primary;
+    transform: scale(1.05);
+  }
+}
+
+// Input Field Animations
+@mixin input-focus-glow($color: $color-primary) {
+  transition: all $duration-normal $easing-ease-out;
+  
+  &:focus {
+    outline: none;
+    border-color: $color;
+    box-shadow: 
+      inset 2px 2px 0 $color-pixel-border-dark,
+      0 0 0 2px rgba($color, 0.3),
+      0 0 10px rgba($color, 0.2);
+    transform: scale(1.02);
+  }
+}
+
+@mixin input-label-float {
+  position: relative;
+  
+  label {
+    position: absolute;
+    top: 50%;
+    left: $space-sm;
+    transform: translateY(-50%);
+    color: $color-text-muted;
+    font-size: $font-size-sm;
+    transition: all $duration-normal $easing-ease-out;
+    pointer-events: none;
+    background-color: $color-bg-dark;
+    padding: 0 $space-xs;
+  }
+  
+  input:focus + label,
+  input:not(:placeholder-shown) + label {
+    top: 0;
+    left: $space-sm;
+    transform: translateY(-50%);
+    font-size: $font-size-xs;
+    color: $color-primary;
+  }
+}
+
+// Card and Panel Animations
+@mixin card-hover-lift {
+  transition: all $duration-normal $easing-ease-out;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+      2px 2px 0 $color-pixel-border-dark,
+      4px 6px 12px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@mixin card-flip-effect {
+  perspective: 1000px;
+  
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform $duration-slow;
+    transform-style: preserve-3d;
+  }
+  
+  &:hover .card-inner {
+    transform: rotateY(180deg);
+  }
+  
+  .card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 0;
+  }
+  
+  .card-back {
+    transform: rotateY(180deg);
+  }
+}
+
+// Modal and Overlay Animations
+@mixin modal-scale-in {
+  .modal-content {
+    animation: modalScaleIn $duration-normal $easing-ease-out;
+  }
+}
+
+@mixin modal-slide-up {
+  .modal-content {
+    animation: modalSlideUp $duration-normal $easing-ease-out;
+  }
+}
+
+@mixin modal-bounce-in {
+  .modal-content {
+    animation: modalBounceIn $duration-slow $easing-ease-out;
+  }
+}
+
+// Progress and Loading Animations
+@mixin progress-bar-pulse($color: $color-primary) {
+  .progress-fill {
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba($color, 0.3);
+      animation: progressPulse 2s ease-in-out infinite;
+    }
+  }
+}
+
+@mixin loading-dots-wave {
+  display: inline-flex;
+  gap: $space-xs;
+  
+  .dot {
+    width: 8px;
+    height: 8px;
+    background-color: $color-primary;
+    border-radius: 0;
+    animation: dotWave 1.4s linear infinite;
+    
+    &:nth-child(1) { animation-delay: 0s; }
+    &:nth-child(2) { animation-delay: 0.2s; }
+    &:nth-child(3) { animation-delay: 0.4s; }
+    &:nth-child(4) { animation-delay: 0.6s; }
+  }
+}
+
+// XP and Gamification Animations
+@mixin xp-gain-animation {
+  position: relative;
+  
+  .xp-popup {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: $color-xp-bar;
+    font-family: $font-family-primary;
+    font-size: $font-size-sm;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 1000;
+    animation: xpGainFloat 2s ease-out forwards;
+  }
+}
+
+@mixin level-up-celebration {
+  position: relative;
+  
+  &::before {
+    content: 'LEVEL UP!';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: $font-family-primary;
+    font-size: $font-size-xl;
+    color: $color-level-gold;
+    text-shadow: 
+      0 0 10px $color-level-gold,
+      0 0 20px $color-level-gold;
+    z-index: 1000;
+    animation: levelUpCelebration 2s ease-out;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(
+      circle,
+      rgba($color-level-gold, 0.5) 0%,
+      rgba($color-level-gold, 0.2) 50%,
+      transparent 100%
+    );
+    transform: translate(-50%, -50%);
+    animation: levelUpBurst 1.5s ease-out;
+  }
+}
+
+@mixin achievement-unlock {
+  position: relative;
+  
+  &::before {
+    content: '🏆 ACHIEVEMENT UNLOCKED!';
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: $color-bg-medium;
+    color: $color-achievement-gold;
+    padding: $space-sm $space-md;
+    border: 2px solid $color-achievement-gold;
+    font-family: $font-family-primary;
+    font-size: $font-size-xs;
+    white-space: nowrap;
+    z-index: 1000;
+    animation: achievementSlideIn 3s ease-out;
+  }
+}
+
+// Keyframe Animations
+@keyframes buttonBounce {
+  0%, 20%, 60%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-4px);
+  }
+  80% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes buttonShake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+@keyframes successPulse {
+  0%, 100% {
+    box-shadow: 
+      3px 3px 0 $color-pixel-border-dark,
+      0 0 0 rgba($color-success, 0.7);
+  }
+  50% {
+    box-shadow: 
+      3px 3px 0 $color-pixel-border-dark,
+      0 0 20px rgba($color-success, 0.7);
+  }
+}
+
+@keyframes dangerFlash {
+  0% { background-color: $color-danger; }
+  100% { background-color: lighten($color-danger, 20%); }
+}
+
+@keyframes modalScaleIn {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes modalSlideUp {
+  0% {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes modalBounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(0.9);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes progressPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes dotWave {
+  0%, 60%, 100% {
+    transform: initial;
+  }
+  30% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes xpGainFloat {
+  0% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) translateY(-30px);
+    opacity: 0;
+  }
+}
+
+@keyframes levelUpCelebration {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  20% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+  40% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes levelUpBurst {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.8;
+  }
+  50% {
+    width: 200px;
+    height: 200px;
+    opacity: 0.4;
+  }
+  100% {
+    width: 400px;
+    height: 400px;
+    opacity: 0;
+  }
+}
+
+@keyframes achievementSlideIn {
+  0% {
+    transform: translateX(-50%) translateY(-20px);
+    opacity: 0;
+  }
+  20% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+  80% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) translateY(-20px);
+    opacity: 0;
+  }
+}
+
+// Utility Animation Classes
+.btn-bounce {
+  @include button-bounce-effect();
+}
+
+.btn-shake {
+  @include button-shake-effect();
+}
+
+.btn-grow {
+  @include button-grow-effect();
+}
+
+.card-hover {
+  @include card-hover-lift();
+}
+
+.card-flip {
+  @include card-flip-effect();
+}
+
+.nav-slide {
+  @include nav-item-slide();
+}
+
+.nav-glow {
+  @include nav-item-glow();
+}
+
+.input-glow {
+  @include input-focus-glow();
+}
+
+.xp-gain {
+  @include xp-gain-animation();
+}
+
+.level-up {
+  @include level-up-celebration();
+}
+
+.achievement {
+  @include achievement-unlock();
+}
+
+.loading-wave {
+  @include loading-dots-wave();
+}
+
+// Entrance Animations
+.fade-in {
+  animation: fadeIn $duration-normal ease-out;
+}
+
+.slide-in-left {
+  animation: slideInLeft $duration-normal ease-out;
+}
+
+.slide-in-right {
+  animation: slideInRight $duration-normal ease-out;
+}
+
+.slide-in-up {
+  animation: slideInUp $duration-normal ease-out;
+}
+
+.bounce-in {
+  animation: bounceIn $duration-slow ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideInUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

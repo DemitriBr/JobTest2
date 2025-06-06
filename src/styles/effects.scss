@@ -1,0 +1,522 @@
+// CRT and Visual Effects Library
+// Authentic retro visual effects for 8-bit theme
+
+// CRT Scanline Effects
+@mixin crt-scanlines($intensity: 0.1, $line-height: 2px) {
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent #{$line-height},
+        rgba(0, 0, 0, $intensity) #{$line-height},
+        rgba(0, 0, 0, $intensity) #{$line-height * 2}
+      );
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+@mixin crt-screen($curvature: 0.02) {
+  background-color: $color-bg-dark;
+  border-radius: #{$curvature * 100}%;
+  box-shadow: 
+    inset 0 0 50px rgba(0, 0, 0, 0.5),
+    inset 0 0 100px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba($color-primary, 0.2);
+  
+  // Subtle screen flicker
+  animation: crtFlicker 0.15s infinite linear alternate;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(
+        ellipse at center,
+        transparent 0%,
+        transparent 70%,
+        rgba(0, 0, 0, 0.2) 100%
+      );
+    pointer-events: none;
+  }
+}
+
+@mixin crt-phosphor-glow($color: $color-primary) {
+  text-shadow: 
+    0 0 5px $color,
+    0 0 10px $color,
+    0 0 15px $color,
+    0 0 20px $color;
+  
+  animation: phosphorPulse 2s ease-in-out infinite alternate;
+}
+
+// Glowing Text Effects
+@mixin glow-text($color: $color-primary, $intensity: 1) {
+  color: $color;
+  text-shadow: 
+    0 0 #{5px * $intensity} rgba($color, 0.8),
+    0 0 #{10px * $intensity} rgba($color, 0.6),
+    0 0 #{15px * $intensity} rgba($color, 0.4),
+    0 0 #{20px * $intensity} rgba($color, 0.2);
+  
+  animation: textGlow #{2s / $intensity} ease-in-out infinite alternate;
+}
+
+@mixin neon-text($color: $color-accent, $bg-color: transparent) {
+  color: $bg-color;
+  background-color: $bg-color;
+  text-shadow: 
+    0 0 7px $color,
+    0 0 10px $color,
+    0 0 21px $color,
+    0 0 42px $color,
+    0 0 82px $color,
+    0 0 92px $color,
+    0 0 102px $color,
+    0 0 151px $color;
+  
+  &:hover {
+    animation: neonFlicker 1.5s ease-in-out infinite alternate;
+  }
+}
+
+@mixin retro-text-effect {
+  font-family: $font-family-primary;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  
+  background: linear-gradient(
+    45deg,
+    $color-primary,
+    $color-secondary,
+    $color-accent,
+    $color-primary
+  );
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  animation: retroGradient 3s ease infinite;
+}
+
+// 8-Bit Visual Effects
+@mixin pixelate($size: 1px) {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  
+  // For text pixelation effect
+  transform: scale(1);
+  filter: contrast(1) brightness(1);
+}
+
+@mixin pixel-explosion($color: $color-primary, $size: 4px) {
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: $size;
+    height: $size;
+    background-color: $color;
+    transform: translate(-50%, -50%);
+    box-shadow: 
+      #{-$size * 3} #{-$size * 2} 0 $color,
+      #{$size * 2} #{-$size * 3} 0 $color,
+      #{-$size * 2} #{$size * 3} 0 $color,
+      #{$size * 3} #{$size * 2} 0 $color,
+      #{-$size * 4} 0 0 $color,
+      #{$size * 4} 0 0 $color,
+      0 #{-$size * 4} 0 $color,
+      0 #{$size * 4} 0 $color;
+    opacity: 0;
+    animation: pixelExplode 0.6s ease-out;
+  }
+}
+
+@mixin pixel-rain($color: $color-primary, $density: 20) {
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: 0;
+    right: 0;
+    height: 200%;
+    background-image: 
+      radial-gradient(2px 2px at 20% 30%, $color, transparent),
+      radial-gradient(2px 2px at 40% 70%, rgba($color, 0.8), transparent),
+      radial-gradient(1px 1px at 90% 40%, rgba($color, 0.6), transparent);
+    background-repeat: repeat;
+    background-size: #{100px / $density * 10} #{50px / $density * 10};
+    animation: pixelRainFall 3s linear infinite;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+}
+
+// Screen Transition Effects
+@mixin screen-wipe($direction: 'left', $duration: 0.5s) {
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    #{$direction}: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      $color-bg-dark 50%,
+      transparent 100%
+    );
+    animation: screenWipe#{capitalize($direction)} $duration ease-in-out;
+    z-index: 10;
+  }
+}
+
+@mixin fade-in-pixels($delay: 0s, $duration: 1s) {
+  opacity: 0;
+  animation: fadeInPixels $duration ease-out $delay forwards;
+}
+
+@mixin glitch-effect($intensity: 5px) {
+  position: relative;
+  
+  &::before,
+  &::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+  }
+  
+  &::before {
+    color: #ff00ff;
+    animation: glitch1 0.5s infinite;
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  }
+  
+  &::after {
+    color: #00ffff;
+    animation: glitch2 0.5s infinite;
+    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  }
+  
+  &:hover {
+    &::before,
+    &::after {
+      animation-duration: 0.1s;
+    }
+  }
+}
+
+// Power-up Effects
+@mixin power-up-glow($color: $color-accent) {
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+      circle,
+      rgba($color, 0.3) 0%,
+      rgba($color, 0.1) 40%,
+      transparent 70%
+    );
+    animation: powerUpPulse 2s ease-in-out infinite;
+    z-index: -1;
+  }
+}
+
+@mixin level-up-burst($color: $color-level-gold) {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(
+      circle,
+      $color 0%,
+      rgba($color, 0.8) 30%,
+      transparent 70%
+    );
+    transform: translate(-50%, -50%);
+    animation: levelUpBurst 0.8s ease-out;
+  }
+}
+
+// Loading Effects
+@mixin pixel-loading-dots($color: $color-primary, $size: 4px) {
+  display: inline-flex;
+  gap: $size;
+  
+  &::before,
+  &::after {
+    content: '';
+    width: $size;
+    height: $size;
+    background-color: $color;
+    animation: pixelDotBounce 1.4s infinite both;
+  }
+  
+  &::before {
+    animation-delay: -0.32s;
+  }
+  
+  &::after {
+    animation-delay: -0.16s;
+  }
+}
+
+@mixin progress-bar-animation($color: $color-primary) {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    $color 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: progressBarSlide 2s linear infinite;
+}
+
+// Retro Animation Keyframes
+@keyframes crtFlicker {
+  0% { opacity: 1; }
+  98% { opacity: 1; }
+  99% { opacity: 0.98; }
+  100% { opacity: 1; }
+}
+
+@keyframes phosphorPulse {
+  0% { 
+    text-shadow: 
+      0 0 5px currentColor,
+      0 0 10px currentColor,
+      0 0 15px currentColor;
+  }
+  100% { 
+    text-shadow: 
+      0 0 10px currentColor,
+      0 0 20px currentColor,
+      0 0 30px currentColor;
+  }
+}
+
+@keyframes textGlow {
+  0% { 
+    filter: brightness(1);
+    text-shadow: 
+      0 0 5px currentColor,
+      0 0 10px currentColor;
+  }
+  100% { 
+    filter: brightness(1.2);
+    text-shadow: 
+      0 0 10px currentColor,
+      0 0 20px currentColor,
+      0 0 30px currentColor;
+  }
+}
+
+@keyframes neonFlicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    text-shadow: 
+      0 0 7px currentColor,
+      0 0 10px currentColor,
+      0 0 21px currentColor,
+      0 0 42px currentColor;
+  }
+  20%, 24%, 55% {
+    text-shadow: none;
+  }
+}
+
+@keyframes retroGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pixelExplode {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2);
+  }
+}
+
+@keyframes pixelRainFall {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes screenWipeLeft {
+  0% { left: -100%; }
+  50% { left: 0%; }
+  100% { left: 100%; }
+}
+
+@keyframes screenWipeRight {
+  0% { right: -100%; }
+  50% { right: 0%; }
+  100% { right: 100%; }
+}
+
+@keyframes fadeInPixels {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+    filter: blur(2px);
+  }
+  50% {
+    filter: blur(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes glitch1 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+}
+
+@keyframes glitch2 {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(2px, -2px); }
+  40% { transform: translate(2px, 2px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(-2px, 2px); }
+}
+
+@keyframes powerUpPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes levelUpBurst {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  50% {
+    width: 100px;
+    height: 100px;
+    opacity: 0.8;
+  }
+  100% {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+  }
+}
+
+@keyframes pixelDotBounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+@keyframes progressBarSlide {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+// Utility Classes for Effects
+.crt-screen {
+  @include crt-screen();
+  @include crt-scanlines();
+}
+
+.glow-text {
+  @include glow-text();
+}
+
+.neon-text {
+  @include neon-text();
+}
+
+.retro-text {
+  @include retro-text-effect();
+}
+
+.pixelated {
+  @include pixelate();
+}
+
+.glitch {
+  @include glitch-effect();
+}
+
+.power-up {
+  @include power-up-glow();
+}
+
+.level-up-effect {
+  @include level-up-burst();
+}
+
+.pixel-rain {
+  @include pixel-rain();
+}
+
+.fade-in-pixels {
+  @include fade-in-pixels();
+}
