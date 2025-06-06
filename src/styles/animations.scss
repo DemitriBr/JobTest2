@@ -7,18 +7,18 @@
   transition: all $duration-fast $easing-ease-out;
   
   &:hover {
-    transform: translate(-#{$depth/2}, -#{$depth/2});
+    transform: translate(calc(-1 * #{$depth} / 2), calc(-1 * #{$depth} / 2));
     box-shadow: 
       #{$depth + 1} #{$depth + 1} 0 $color-pixel-border-dark,
       inset 1px 1px 0 rgba(255, 255, 255, 0.3);
   }
   
   &:active {
-    transform: translate(#{$depth/2}, #{$depth/2});
+    transform: translate(calc(#{$depth} / 2), calc(#{$depth} / 2));
     box-shadow: 
-      #{$depth/2} #{$depth/2} 0 $color-pixel-border-dark,
+      calc(#{$depth} / 2) calc(#{$depth} / 2) 0 $color-pixel-border-dark,
       inset 2px 2px 0 rgba(0, 0, 0, 0.2);
-    transition-duration: $duration-fast / 2;
+    transition-duration: calc(#{$duration-fast} / 2);
   }
 }
 

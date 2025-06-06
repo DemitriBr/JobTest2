@@ -73,7 +73,7 @@
     0 0 #{15px * $intensity} rgba($color, 0.4),
     0 0 #{20px * $intensity} rgba($color, 0.2);
   
-  animation: textGlow #{2s / $intensity} ease-in-out infinite alternate;
+  animation: textGlow calc(2s / #{$intensity}) ease-in-out infinite alternate;
 }
 
 @mixin neon-text($color: $color-accent, $bg-color: transparent) {
@@ -168,7 +168,7 @@
       radial-gradient(2px 2px at 40% 70%, rgba($color, 0.8), transparent),
       radial-gradient(1px 1px at 90% 40%, rgba($color, 0.6), transparent);
     background-repeat: repeat;
-    background-size: #{100px / $density * 10} #{50px / $density * 10};
+    background-size: calc(100px / #{$density} * 10) calc(50px / #{$density} * 10);
     animation: pixelRainFall 3s linear infinite;
     opacity: 0.7;
     pointer-events: none;
