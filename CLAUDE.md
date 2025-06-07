@@ -89,3 +89,48 @@ Before proceeding to the next phase, thoroughly test all functionality implement
 - High contrast mode support
 - Keyboard navigation support
 - Screen reader compatibility
+
+## Version Management & Cache Busting
+
+### Important: Update Version for Every Change
+Before pushing any changes to production, the version number in index.html MUST be updated to ensure browsers load the latest files.
+
+### Version Format
+- **MAJOR.MINOR.PATCH** (e.g., 1.5.0)
+  - MAJOR: Breaking changes or major feature releases
+  - MINOR: New features or significant improvements
+  - PATCH: Bug fixes and minor improvements
+
+### How to Update Version
+
+#### Option 1: Automatic (Recommended)
+```bash
+# Auto-increment patch version
+node update-version.js
+
+# Specify version and description
+node update-version.js 1.5.1 "Fixed modal display issue"
+
+# Using npm script
+npm run version:update 1.5.1 "Fixed modal display issue"
+```
+
+#### Option 2: Manual
+1. Edit `index.html`
+2. Update version comment: `<!-- Version: X.X.X - Description -->`
+3. Update script query param: `src="/src/main.js?v=X.X.X"`
+
+### Files to Track
+- `index.html` - Contains version in comment and script tags
+- `VERSION.md` - Detailed changelog of all versions
+- `update-version.js` - Script to automate version updates
+
+### Deployment Checklist
+1. Complete feature/fix implementation
+2. Test functionality thoroughly
+3. Update version number using script or manually
+4. Commit with descriptive message
+5. Push to repository
+6. Verify deployment on Netlify
+
+This ensures users always receive the latest JavaScript and CSS files without cache issues.
