@@ -4,6 +4,8 @@ import { gamification } from '../services/gamification.js';
 import { celebrations } from '../services/celebrations.js';
 import db from '../services/database.js';
 import { eventBus } from '../services/eventBus.js';
+import SecurityService from '../services/security.js';
+import { PINModal } from '../components/PINModal.js';
 
 // Import views
 import { DashboardView } from './DashboardView.js';
@@ -15,12 +17,23 @@ class MainApp {
   constructor() {
     this.initialized = false;
     this.currentUser = 'default-user'; // For now, single user
+    this.pinModal = new PINModal();
   }
 
   async initialize() {
     try {
       // Initialize celebrations first
       celebrations.initialize();
+      
+      // Initialize security service
+      SecurityService.initialize();
+      
+      // Check if user needs to authenticate
+      const needsAuth = await this.checkAuthentication();
+      if (needsAuth) {
+        // Show PIN modal and wait for authentication
+        await this.showPINModal();
+      }
       
       // Initialize database
       await db.initialize();
@@ -36,6 +49,9 @@ class MainApp {
       
       // Set up navigation
       this.setupNavigation();
+      
+      // Hide loading screen
+      this.hideLoadingScreen();
       
       // Navigate to initial route
       const currentPath = window.location.pathname;
@@ -53,6 +69,52 @@ class MainApp {
     } catch (error) {
       console.error('Failed to initialize application:', error);
       this.showError('Failed to initialize application. Please refresh the page.');
+    }
+  }
+
+  async checkAuthentication() {
+    // Check if PIN is setup
+    const pinExists = SecurityService.getStoredPIN();
+    
+    // If no PIN exists, user needs to set one up
+    if (!pinExists) {
+      return true;
+    }
+    
+    // If PIN exists but user is not authenticated, they need to login
+    if (!SecurityService.isAuthenticated) {
+      return true;
+    }
+    
+    return false;
+  }
+
+  async showPINModal() {
+    return new Promise((resolve) => {
+      // Listen for successful authentication
+      const authHandler = () => {
+        eventBus.off('security:authenticated', authHandler);
+        eventBus.off('security:pin_setup', authHandler);
+        resolve();
+      };
+      
+      eventBus.on('security:authenticated', authHandler);
+      eventBus.on('security:pin_setup', authHandler);
+      
+      // Show the modal
+      this.pinModal.show();
+    });
+  }
+
+  hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    const mainApp = document.getElementById('main-app');
+    
+    if (loadingScreen && mainApp) {
+      setTimeout(() => {
+        loadingScreen.classList.add('hidden');
+        mainApp.classList.remove('hidden');
+      }, 500);
     }
   }
 
@@ -78,6 +140,22 @@ class MainApp {
         const route = link.getAttribute('data-route');
         router.navigate(route);
       });
+    });
+
+    // Listen for security events
+    window.addEventListener('security:logout', async (e) => {
+      console.log('Logout event received:', e.detail.reason);
+      // Show PIN modal again
+      await this.showPINModal();
+    });
+
+    // Reset session timeout on user activity
+    document.addEventListener('click', () => {
+      SecurityService.extendSession();
+    });
+    
+    document.addEventListener('keypress', () => {
+      SecurityService.extendSession();
     });
   }
 

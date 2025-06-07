@@ -97,33 +97,11 @@
       </div>
     </div>
     
-    <!-- PIN Authentication Modal -->
-    <div id="pin-modal" class="modal">
-      <div class="modal-content pixel-border">
-        <div class="modal-header">
-          <h2>ENTER PIN</h2>
-        </div>
-        <div class="modal-body">
-          <div class="pin-input-container">
-            <input type="password" id="pin-input" class="pin-input" maxlength="6" placeholder="••••••" />
-            <div class="pin-dots">
-              <span class="pin-dot"></span>
-              <span class="pin-dot"></span>
-              <span class="pin-dot"></span>
-              <span class="pin-dot"></span>
-              <span class="pin-dot"></span>
-              <span class="pin-dot"></span>
-            </div>
-          </div>
-          <div class="pin-error hidden" id="pin-error">
-            Invalid PIN. Please try again.
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="pixel-btn primary" id="pin-submit">UNLOCK</button>
-        </div>
-      </div>
-    </div>
+    <!-- Celebration container for gamification effects -->
+    <div id="celebration-container"></div>
+    
+    <!-- Error container for critical errors -->
+    <div id="error-container" class="error-container" style="display: none;"></div>
   </div>
   
   <script type="module" src="/src/main.js"></script>
