@@ -35,6 +35,14 @@ class DatabaseService extends Dexie {
     }
   }
 
+  // Alias for MainApp compatibility
+  async initialize() {
+    if (!this.isInitialized) {
+      await this.init();
+    }
+    return this;
+  }
+
   async setupInitialData() {
     // Initialize game data if it doesn't exist
     const gameData = await this.gameData.toArray();

@@ -34,6 +34,7 @@ class SecurityService {
       if (!storedPIN) {
         // First time setup
         await this.setupPIN(pin);
+        this.setEncryptionKey(pin);
         this.isAuthenticated = true;
         this.resetLoginAttempts();
         this.logSecurityEvent('PIN_SETUP', 'success');
@@ -41,6 +42,7 @@ class SecurityService {
       }
 
       if (hashedPIN === storedPIN) {
+        this.setEncryptionKey(pin);
         this.isAuthenticated = true;
         this.resetLoginAttempts();
         this.resetSessionTimeout();

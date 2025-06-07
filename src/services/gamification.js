@@ -1,7 +1,7 @@
 // Gamification Engine
 // Manages XP, levels, achievements, and quests
 
-import { db } from './database.js';
+import db from './database.js';
 import { eventBus } from './eventBus.js';
 
 // XP Configuration

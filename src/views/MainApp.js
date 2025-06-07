@@ -25,8 +25,7 @@ class MainApp {
       // Initialize celebrations first
       celebrations.initialize();
       
-      // Initialize security service
-      SecurityService.initialize();
+      // Security service initializes automatically in constructor
       
       // Hide loading screen immediately to show the app
       this.hideLoadingScreen();

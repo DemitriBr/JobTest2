@@ -217,7 +217,7 @@ export class PINModal {
         }
 
         // Verify PIN
-        await SecurityService.authenticate(pin);
+        await SecurityService.authenticateWithPIN(pin);
         
         // Award XP for successful login
         await gamification.awardXP('DAILY_LOGIN');
