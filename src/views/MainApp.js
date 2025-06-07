@@ -28,11 +28,61 @@ class MainApp {
       // Initialize security service
       SecurityService.initialize();
       
-      // Check if user needs to authenticate
+      // Hide loading screen immediately to show the app
+      this.hideLoadingScreen();
+      
+      // Check if user needs to authenticate BEFORE initializing router
       const needsAuth = await this.checkAuthentication();
       if (needsAuth) {
-        // Show PIN modal and wait for authentication
-        await this.showPINModal();
+        // Show a temporary loading message in main content
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+          mainContent.innerHTML = `
+            <div class="view-container">
+              <div class="auth-loading">
+                <div class="pixel-loader">
+                  <div class="pixel-block"></div>
+                  <div class="pixel-block"></div>
+                  <div class="pixel-block"></div>
+                </div>
+                <p>Initializing security...</p>
+              </div>
+            </div>
+          `;
+        }
+        
+        // Small delay to ensure DOM is ready
+        setTimeout(() => {
+          // Show PIN modal and wait for authentication
+          this.showPINModal().then(() => {
+            // After authentication, continue with initialization
+            this.continueInitialization();
+          });
+        }, 100);
+        
+        return; // Exit early, will continue after authentication
+      }
+      
+      // If no auth needed, continue normally
+      await this.continueInitialization();
+    } catch (error) {
+      console.error('Failed to initialize application:', error);
+      this.showError('Failed to initialize application. Please refresh the page.');
+    }
+  }
+
+  async continueInitialization() {
+    try {
+      // Initialize router
+      router.initialize('main-content');
+      
+      // Register routes
+      this.registerRoutes();
+      
+      // Set up navigation if not already done
+      if (!this.navigationSetup) {
+        this.setupNavigation();
+        this.navigationSetup = true;
       }
       
       // Initialize database
@@ -40,18 +90,6 @@ class MainApp {
       
       // Initialize gamification
       await gamification.initialize(this.currentUser);
-      
-      // Initialize router
-      router.initialize('main-content');
-      
-      // Register routes
-      this.registerRoutes();
-      
-      // Set up navigation
-      this.setupNavigation();
-      
-      // Hide loading screen
-      this.hideLoadingScreen();
       
       // Navigate to initial route
       const currentPath = window.location.pathname;
@@ -75,14 +113,18 @@ class MainApp {
   async checkAuthentication() {
     // Check if PIN is setup
     const pinExists = SecurityService.getStoredPIN();
+    console.log('PIN exists:', !!pinExists);
+    console.log('Is authenticated:', SecurityService.isAuthenticated);
     
     // If no PIN exists, user needs to set one up
     if (!pinExists) {
+      console.log('No PIN found, need setup');
       return true;
     }
     
     // If PIN exists but user is not authenticated, they need to login
     if (!SecurityService.isAuthenticated) {
+      console.log('PIN exists but not authenticated, need login');
       return true;
     }
     

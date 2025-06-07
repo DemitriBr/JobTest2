@@ -14,8 +14,11 @@ export class PINModal {
   }
 
   async show() {
+    console.log('PINModal.show() called');
+    
     // Check if PIN is already setup
     this.isSetupMode = !SecurityService.getStoredPIN();
+    console.log('PIN setup mode:', this.isSetupMode);
     
     // Create modal HTML
     this.createModal();
@@ -25,7 +28,9 @@ export class PINModal {
     
     // Focus on input
     setTimeout(() => {
-      this.pinInput.focus();
+      if (this.pinInput) {
+        this.pinInput.focus();
+      }
     }, 100);
   }
 
